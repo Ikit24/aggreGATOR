@@ -27,14 +27,14 @@ func Read() (Config, error) {
 	}
 
 	if err := json.Unmarshal(data, &cfg); err != nil {
-		return cfg,  err
+		return cfg, err
 	}
 
 	return cfg, nil
 }
 
-func (c *Config) SetUser(name string) error {
-	c.CurrentUserName = name
+func (cfg *Config) SetUser(name string) error {
+	cfg.CurrentUserName = name
 	
 	home, err := os.UserHomeDir()
 	if err != nil {
@@ -43,7 +43,7 @@ func (c *Config) SetUser(name string) error {
 
 	path := filepath.Join(home, ".gatorconfig.json")
 
-	data, err := json.Marshal(c)
+	data, err := json.Marshal(cfg)
 	if err != nil {
 		return err
 	}

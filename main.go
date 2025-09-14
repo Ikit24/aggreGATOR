@@ -6,20 +6,17 @@ import (
 	"github.com/Ikit24/aggreGATOR/internal/config"
 )
 
+type state struct {
+	cfg *config.Config
+}
+
 func main() {
-	cfg, err := config.Read()
+	cfgVal, err := config.Read()
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err := cfg.SetUser("Attila"); err != nil {
-		log.Fatal(err)
-	}
+	s := &state{cfg: &cfgVal}
 
-	cfg, err = config.Read()
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	fmt.Println(cfg.DBURL)
+	_ = s
 }

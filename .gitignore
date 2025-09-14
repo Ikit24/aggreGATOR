@@ -1,0 +1,13 @@
+bin/
+build/
+dist/
+coverage.out
+go.work
+.env
+.env.*
+*.swp
+*.swo
+*.swx
+*~
+.netrwhist
+.idea/
