@@ -1,14 +1,22 @@
 package main
 
 import (
-	"fmt"
-	"log"
-	"os"
-	"github.com/Ikit24/aggreGATOR/internal/config"
+    "context"
+    "database/sql"
+    "fmt"
+    "log"
+    "os"
+    "time"
+
+    "github.com/Ikit24/aggreGATOR/internal/config"
+    "github.com/Ikit24/aggreGATOR/internal/database"
+    "github.com/google/uuid"
+    _ "github.com/lib/pq"
 )
 
 type state struct {
-	cfg *config.Config
+	db	*database.Queries
+	cfg	*config.Config
 }
 
 type command struct {
@@ -43,10 +51,40 @@ func handlerLogin(s *state, cmd command) error {
 	}
 	username := cmd.args[0]
 	
+	_, err := s.db.GetUser(context.Background(),username)
+	if err != nil {
+		return fmt.Errorf("user does not exist: %s", username)
+	}
 	if err := s.cfg.SetUser(username); err != nil {
 		return err
 	}
 	fmt.Println("user set to:", username)
+	return nil
+}
+
+func handlerRegister(s *state, cmd command) error {
+	if len(cmd.args) < 1 {
+		return fmt.Errorf("register expects a single argument, the username.")
+	}
+	username := cmd.args[0]
+	
+	params := database.CreateUserParams{
+		ID:        uuid.New(),
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+		Name:      username,
+	}
+
+	_, err := s.db.CreateUser(context.Background(),params)
+	if err != nil {
+		return fmt.Errorf("user already exists: %s", username)
+	}
+	
+	if err := s.cfg.SetUser(username); err != nil {
+		return err
+	}
+
+	fmt.Println("user created:", username)
 	return nil
 }
 
@@ -56,10 +94,22 @@ func main() {
 		log.Fatal(err)
 	}
 
-	s := &state{cfg: &cfgVal}
+	dbURL := cfgVal.DBURL
+
+	db, err := sql.Open("postgres", dbURL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
+	s := &state{
+		cfg: &cfgVal,
+		db:	 database.New(db),
+	}
 
 	cmds := &commands{m: make(map[string]handlerFunc)}
 	cmds.register("login", handlerLogin)
+	cmds.register("register", handlerRegister)
 
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, "not enough arguments")
