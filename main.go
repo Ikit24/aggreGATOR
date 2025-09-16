@@ -62,6 +62,14 @@ func handlerLogin(s *state, cmd command) error {
 	return nil
 }
 
+func handlerReset(s *state, cmd command) error {
+	if err := s.db.Reset(context.Background()); err	!= nil {
+		return fmt.Errorf("reset failed: %w", err)
+	}
+	fmt.Println("Database reset successfully!")
+	return nil
+}
+
 func handlerRegister(s *state, cmd command) error {
 	if len(cmd.args) < 1 {
 		return fmt.Errorf("register expects a single argument, the username.")
@@ -110,6 +118,7 @@ func main() {
 	cmds := &commands{m: make(map[string]handlerFunc)}
 	cmds.register("login", handlerLogin)
 	cmds.register("register", handlerRegister)
+	cmds.register("reset", handlerReset)
 
 	if len(os.Args) < 2 {
 		fmt.Fprintln(os.Stderr, "not enough arguments")
