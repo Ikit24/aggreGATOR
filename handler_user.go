@@ -59,11 +59,11 @@ func handlerListUsers(s *state, cmd command) error {
 		return fmt.Errorf("failed to list users")
 	}
 
-	for _, name := range users {
-		if name == s.cfg.CurrentUserName {
-			fmt.Printf("* %s (current)\n", name)
+	for _, user := range users {
+		if user.Name == s.cfg.CurrentUserName {
+			fmt.Printf("* %s (current)\n", user.Name)
 		} else {
-			fmt.Printf("* %s\n", name)
+			fmt.Printf("* %s\n", user.Name)
 		}
 	}
 	return nil
