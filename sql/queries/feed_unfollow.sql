@@ -1,3 +1,3 @@
 -- name: DeleteFeedFollowByUserAndFeed :exec
 DELETE FROM feed_follows 
-WHERE user = $1 AND feeds.id = $2;
+WHERE user_id = $1 AND feed_id = $2;
