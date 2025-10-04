@@ -96,7 +96,7 @@ func (q *Queries) GetUsers(ctx context.Context) ([]User, error) {
 }
 
 const reset = `-- name: Reset :exec
-DELETE FROM users
+DELETE FROM feed_follows
 `
 
 func (q *Queries) Reset(ctx context.Context) error {
