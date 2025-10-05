@@ -42,8 +42,8 @@ func handlerAddFeed(s *state, cmd command, user database.User) error {
 	fmt.Printf("ID: %s\n", feed.ID)
 	fmt.Printf("Name: %s\n", feed.Name)
 	fmt.Printf("URL: %s\n", feed.Url)
-	fmt.Printf("CreatedAt: %s\n", feed.CreatedAt)
-	fmt.Printf("UpdatedAt: %s\n", feed.UpdatedAt)
+	fmt.Printf("CreatedAt: %s\n", feed.CreatedAt.Format("2006-01-02 15:04:05"))
+	fmt.Printf("UpdatedAt: %s\n", feed.UpdatedAt.Format("2006-01-02 15:04:05"))
 
 	return nil
 }

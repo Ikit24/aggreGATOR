@@ -11,9 +11,13 @@ RETURNING *;
 -- name: GetUser :one
 SELECT * FROM users WHERE name = $1;
 
--- name: Reset :exec
+-- name: DeleteFeedFollows :exec
 DELETE FROM feed_follows;
+
+-- name: DeleteFeeds :exec
 DELETE FROM feeds;
+
+-- name: DeleteUsers :exec
 DELETE FROM users;
 
 -- name: GetUsers :many
