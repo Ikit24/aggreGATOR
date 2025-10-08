@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"time"
+	"strings"
 
 	"github.com/Ikit24/aggreGATOR/internal/database"
 )
@@ -20,7 +21,7 @@ func handlerAgg(s *state, cmd command) error {
 	fmt.Printf("Collecting feeds every %s\n", timeParseDur)
 
 	ticker := time.NewTicker(timeParseDur)
-	for ; ; <-ticker.C {
+	for ; ; <- ticker.C {
 		err = scrapeFeeds(s)
 		if err != nil {
 			fmt.Println("Error scraping feeds:", err)
@@ -49,7 +50,32 @@ func scrapeFeeds(s *state) error {
 	}
 
 	for _, item := range rssFeed.Channel.Item {
-		fmt.Printf("Title: %s\n", item.Title)
+		t, ok := parsePubDate(item.PubDate)
+		pub := sql.NullTime{}
+		if  ok {
+			pub = sql.NullTime{Time: t, Valid: true}
+		}
 	}
 	return nil
+}
+
+func parsePubDate(s string) (time.Time, bool) {
+	layouts := []string{
+		time.RFC1123Z,
+		time.RFC1123,
+		time.RFC822Z,
+		time.RFC822,
+		time.RFC3339,
+	}
+	s = strings.TrimSpace(s)
+	if s == "" {
+		return time.Time{}, false
+	}
+	for _, layout := range layouts {
+		t, err := time.Parse(layout, s)
+		if err == nil {
+			return t, true
+		}
+	}
+	return time.Time{}, false
 }
