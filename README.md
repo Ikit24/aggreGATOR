@@ -26,11 +26,6 @@ Create a config file at `~/.gatorconfig.json`:
   "current_user_name": ""
 }
 ```
-
-Optional: Set `GATOR_CONFIG` environment variable to point to a custom config file location.
-
-Make sure the database exists. Migrations may apply automatically on first run (depending on implementation).
-
 ## Usage
 
 ### Register and set current user
