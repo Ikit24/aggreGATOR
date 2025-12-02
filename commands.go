@@ -33,6 +33,7 @@ func (c *commands) unfollow(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 1 {
 		return fmt.Errorf("unfollow command requires one argument")
 	}
+	
 	ctx := context.Background()
 	url := cmd.Args[0]
 
